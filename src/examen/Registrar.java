@@ -25,6 +25,7 @@ public class Registrar extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        txtID.setText(String.valueOf(idProducto()));
     }
     
     public void Conexion() {
@@ -41,7 +42,7 @@ public class Registrar extends javax.swing.JFrame {
                 System.out.println("Connecting to database...");
             }
         } catch (Exception e) {
-            System.out.println("Problem when connecting to the database");
+            System.out.println("Problem when connecting to the database " + e);
         }
     }
 
@@ -78,6 +79,8 @@ public class Registrar extends javax.swing.JFrame {
         jLabel4.setText("Tipo: ");
 
         cmbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Niño", "Joven", "Adulto" }));
+
+        txtID.setEditable(false);
 
         jButton1.setText("Registrar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -167,12 +170,13 @@ public class Registrar extends javax.swing.JFrame {
             
             s = connection.createStatement();
             
-            int z = s.executeUpdate("INSERT INTO \"productos\" (\"Identificador\") VALUES ('"+ide+"')");
+            int z = s.executeUpdate("INSERT INTO \"productos\" (\"Identificador\", \"Nombre\", \"Tipo\", \"Precio\") "
+                                  + "VALUES ('"+ide+"', '"+nombre+"', '"+tipo+"', '"+precio+"')");
             
             if(z==1){
-                JOptionPane.showConfirmDialog(null, "Producto agregado.");
+                JOptionPane.showConfirmDialog(null, "Producto agregado.","Agregado",JOptionPane.DEFAULT_OPTION);
             }else{
-                JOptionPane.showConfirmDialog(null, "Producto no agregado.");
+                JOptionPane.showConfirmDialog(null, "Producto no agregado.","Agregado",JOptionPane.DEFAULT_OPTION);
             }
             
         }catch(Exception e){
@@ -180,6 +184,24 @@ public class Registrar extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private Integer idProducto(){
+        Conexion();
+        int ide = 0;
+        try{
+        
+            s = connection.createStatement();
+            rs = s.executeQuery("SELECT MAX(\"Identificador\") from productos");
+            while(rs.next()){
+                ide = Integer.parseInt(rs.getString("max")) + 1;
+            }
+            
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Archivo no encontrado " + e, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return ide;
+    }
     
     
     
