@@ -65,6 +65,8 @@ public class Registrar extends javax.swing.JFrame {
         txtPrecio = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        cmbSexo = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Registrar producto");
@@ -96,10 +98,20 @@ public class Registrar extends javax.swing.JFrame {
             }
         });
 
+        jLabel5.setText("Sexo: ");
+
+        cmbSexo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Masculino", "Femenino" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(20, 20, 20))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,14 +131,12 @@ public class Registrar extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addComponent(jLabel1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmbSexo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,7 +157,11 @@ public class Registrar extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(cmbSexo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
@@ -170,8 +184,8 @@ public class Registrar extends javax.swing.JFrame {
             
             s = connection.createStatement();
             
-            int z = s.executeUpdate("INSERT INTO \"productos\" (\"Identificador\", \"Nombre\", \"Tipo\", \"Precio\") "
-                                  + "VALUES ('"+ide+"', '"+nombre+"', '"+tipo+"', '"+precio+"')");
+            int z = s.executeUpdate("INSERT INTO \"productos\" (\"Identificador\", \"Nombre\", \"Tipo\", \"Precio\", \"Sexo\") "
+                                  + "VALUES ('"+ide+"', '"+nombre+"', '"+tipo+"', '"+precio+"', '"+cmbSexo.getSelectedItem().toString()+"')");
             
             if(z==1){
                 JOptionPane.showConfirmDialog(null, "Producto agregado.","Agregado",JOptionPane.DEFAULT_OPTION);
@@ -182,8 +196,19 @@ public class Registrar extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Archivo no encontrado " + e, "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
+        limpiar();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void limpiar(){
+        txtID.setText(String.valueOf(idProducto()));
+        txtNombre.setText(null);
+        txtNombre.requestFocus();
+        txtPrecio.setText(null);
+        cmbSexo.setSelectedIndex(0);
+        cmbTipo.setSelectedIndex(0);
+    }
+    
     private Integer idProducto(){
         Conexion();
         int ide = 0;
@@ -191,9 +216,14 @@ public class Registrar extends javax.swing.JFrame {
         
             s = connection.createStatement();
             rs = s.executeQuery("SELECT MAX(\"Identificador\") from productos");
-            while(rs.next()){
-                ide = Integer.parseInt(rs.getString("max")) + 1;
+            try{
+                while(rs.next()){
+                    ide = Integer.parseInt(rs.getString("max")) + 1;
+                }
+            }catch(Exception e){
+                ide = 0;
             }
+            
             
             
         }catch(Exception e){
@@ -241,6 +271,7 @@ public class Registrar extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cmbSexo;
     private javax.swing.JComboBox<String> cmbTipo;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -248,6 +279,7 @@ public class Registrar extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField txtID;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPrecio;
